@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+python-multipart
+pytesseract
+Pillow
+jinja2
+easyocr
