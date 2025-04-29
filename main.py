@@ -12,9 +12,8 @@ import re
 
 try:
     import easyocr
-    easyocr_reader = easyocr.Reader(['en'], gpu=False)
 except ImportError:
-    easyocr_reader = None
+    easyocr = None
 
 # --- ВЫДЕЛЕНИЕ ФАМИЛИЙ ИЗ ТЕКСТА ---
 def extract_player_names(raw_text: str) -> List[str]:
@@ -128,10 +127,15 @@ def upload_images(request: Request, files: List[UploadFile] = File(...)):
         try:
             image = Image.open(img_path)
             image = image.convert("RGB")
-            if easyocr_reader:
-                easy_txt = easyocr_reader.readtext(np.array(image), detail=0, paragraph=True)
-            else:
-                easy_txt = []
+            easy_txt = []
+            if easyocr is not None:
+                try:
+                    reader = easyocr.Reader(['en'], gpu=False)
+                    easy_txt = reader.readtext(np.array(image), detail=0, paragraph=True)
+                    del reader
+                    import gc; gc.collect()
+                except Exception as e:
+                    print(f"[ERROR] EasyOCR: {e}")
             all_names = extract_player_names("\n".join(easy_txt))
             all_found_names.extend(all_names)
         except Exception as e:
@@ -172,10 +176,15 @@ def upload_images(request: Request, files: List[UploadFile] = File(...)):
         try:
             image = Image.open(img_path)
             image = image.convert("RGB")
-            if easyocr_reader:
-                easy_txt = easyocr_reader.readtext(np.array(image), detail=0, paragraph=True)
-            else:
-                easy_txt = []
+            easy_txt = []
+            if easyocr is not None:
+                try:
+                    reader = easyocr.Reader(['en'], gpu=False)
+                    easy_txt = reader.readtext(np.array(image), detail=0, paragraph=True)
+                    del reader
+                    import gc; gc.collect()
+                except Exception as e:
+                    print(f"[ERROR] EasyOCR: {e}")
             all_names = extract_player_names("\n".join(easy_txt))
             squads.append(list(set(all_names)))
         except Exception as e:
