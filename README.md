@@ -1,4 +1,55 @@
-# Fantasy Squad OCR — Локальный запуск
+# Fantasy Squad Telegram Bot (Render-ready)
+
+Минимальный Telegram-бот для анализа фамилий игроков по скриншотам и тексту. Работает на Render как отдельный Worker-сервис.
+
+## Структура веток
+- **main** — сайт и все остальные файлы
+- **telegram-bot** — только бот (`bot.py`, `requirements.txt`, `Procfile`, `.gitignore`, `README.md`)
+
+## Файлы
+- `bot.py` — логика Telegram-бота (aiogram3 + EasyOCR)
+- `requirements.txt` — зависимости
+- `Procfile` — для Render (worker)
+- `.gitignore` — исключения для git
+- `README.md` — эта инструкция
+
+## Быстрый старт (локально)
+1. Получите токен у @BotFather и экспортируйте:
+   ```bash
+   export BOT_TOKEN=ваш_токен_бота
+   ```
+2. Установите зависимости:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Запустите:
+   ```bash
+   python bot.py
+   ```
+
+## Деплой на Render
+1. Создайте ветку `telegram-bot` с этими файлами (без сайта и лишнего).
+2. В настройках Render:
+   - **Service Type**: Worker
+   - **Start Command**: `python bot.py`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Env**: Python 3.10+, переменная окружения `BOT_TOKEN`
+3. Дождитесь деплоя. Бот будет работать 24/7.
+
+## Как пользоваться
+- Отправляйте боту скриншоты (фото, документы jpg/png) или текст — получите список фамилий и их частоты.
+- Команды:
+  - `/start` — инструкция
+  - `/reset` — сбросить данные
+  - `/stats` — частоты фамилий по всем отправленным сообщениям/картинкам
+  - `/names` — список фамилий
+
+---
+
+**Внимание:**
+- Если деплоите через GitHub, используйте только ветку `telegram-bot` для Worker на Render.
+- Для сайта используйте ветку `main`.
+
 
 ## Быстрый старт (macOS)
 
